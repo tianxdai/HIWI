@@ -1,3 +1,3 @@
 # HIWI
 
-For Hiwi-Job
+Für Hiwi-Job
