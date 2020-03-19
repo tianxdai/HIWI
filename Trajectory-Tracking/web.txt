@@ -1,0 +1,5 @@
+tutorial
+https://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
+
+sorce code
+http://t.dripemail2.com/c/eyJhY2NvdW50X2lkIjoiNDc2ODQyOSIsImRlbGl2ZXJ5X2lkIjoiNjh4Y3hoeDlscnlhcnE1OXdmdnMiLCJ1cmwiOiJodHRwOi8vcHlpbWcuY28vb2R3c3E_X19zPXI0c3FoZWpkdmlxbHMzc205cHZhIn0
