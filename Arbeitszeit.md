@@ -1,4 +1,3 @@
-===============================================
 Das File dokumentiert meine Arbeitszeit als Hiwi an INM
 ===============================================
 Datum:  31-Dez-19
