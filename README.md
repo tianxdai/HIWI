@@ -1,3 +1,3 @@
 # HIWI
 
-Für Hiwi-Job
+Für Hiwi-Job an INM
