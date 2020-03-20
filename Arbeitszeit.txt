@@ -24,7 +24,7 @@ Summe:  89.5 Stunden
 ===============================================
 Datum:  20-Mär-20
 Inhalt: ArUco Package lernen (double pendelum)
-Zeit:  8:30 - 11:30
+Zeit:  8:30 - 11:30 und 13:00 -
 Dauer:  2 Stunden
 Summe:  91.5 Stunden
 ===============================================
