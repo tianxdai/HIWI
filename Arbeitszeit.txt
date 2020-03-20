@@ -1,4 +1,3 @@
-Test
 ===============================================
 Das File dokumentiert meine Arbeitszeit als Hiwi an INM
 ===============================================
