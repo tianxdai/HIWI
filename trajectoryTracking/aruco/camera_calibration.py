@@ -11,7 +11,7 @@ import pandas as pd
 
 ##########  Create Markers  ##########
 # settings
-imagesFolder = "aruco_tracking/images/"
+imagesFolder = "aruco/images/"
 aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
 
 fig = plt.figure()
@@ -31,7 +31,7 @@ plt.show()
 
 ########## create marker board for calibration ##########
 # settings
-imagesFolder = "aruco_tracking/images/"
+imagesFolder = "aruco/images/"
 aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
 board = aruco.CharucoBoard_create(3, 3, 1, 0.8, aruco_dict)
 imboard = board.draw((4000, 4000))
@@ -49,8 +49,8 @@ plt.show()
 
 ######### camera calibration ##########
 # Settings
-imagesFolder = "aruco_tracking/images/camera_calibation/"
-videoFile = "aruco_tracking/videos/camera_calibration.mp4"
+imagesFolder = "aruco/images/camera_calibation/"
+videoFile = "aruco/videos/camera_calibration.mp4"
 aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
 board = aruco.CharucoBoard_create(3, 3, 1, 0.8, aruco_dict)
 # video to images
@@ -133,16 +133,16 @@ print("CAMERA CALIBRATION")
 ret, mtx, dist, rvecs, tvecs = calibrate_camera(allCorners,allIds,imsize)
 print("calibration finished")
 
-np.savetxt("aruco_tracking/cam_calib_mtx.csv", mtx)
-np.savetxt("aruco_tracking/cam_calib_dist.csv", dist)
+np.savetxt("aruco/cam_calib_mtx.csv", mtx)
+np.savetxt("aruco/cam_calib_dist.csv", dist)
 ######################################
 
 
 ########## check calibration ##########
 # setting
-imagesFolder = "aruco_tracking/images/camera_calibation/"
-mtx = np.loadtxt("aruco_tracking/cam_calib_mtx.csv")
-dist = np.loadtxt("aruco_tracking/cam_calib_dist.csv")
+imagesFolder = "aruco/images/camera_calibation/"
+mtx = np.loadtxt("aruco/cam_calib_mtx.csv")
+dist = np.loadtxt("aruco/cam_calib_dist.csv")
 i=60 # select image id
 plt.figure()
 frame = cv2.imread(imagesFolder + "image_%d.jpg"%(i))
