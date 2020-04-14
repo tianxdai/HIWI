@@ -1,5 +1,5 @@
 # USAGE
-# python trajectoryTracking/aruco/poseEstimate.py --video trajectoryTracking/aruco/videos/box.mp4
+# python3 aruco_tracking/pose_estimate.py --video aruco_tracking/videos/pose_estimation.mp4
 
 # import the necessary packages
 from collections import deque
@@ -12,7 +12,7 @@ import imutils
 import time
 
 #
-size_of_marker =  0.030 # side lenght of the marker in meter
+size_of_marker =  0.0345 # side lenght of the marker in meter
 
 
 # construct the argument parse and parse the arguments
@@ -22,6 +22,23 @@ ap.add_argument("-v", "--video",
 ap.add_argument("-b", "--buffer", type=int, default=64,
 	help="max buffer size")
 args = vars(ap.parse_args())
+
+# define the lower and upper boundaries of the "green"
+# ball in the HSV color space, then initialize thee
+# list of tracked points
+yellowLower = (30/360*255, 50*2.55, 30*2.55)
+yellowUpper = (45/360*255,100*2.55,100*2.55)
+greenLower = (70/360*255, 50*2.55, 30*2.55)
+greenUpper = (120/360*255, 100*2.55, 100*2.55)
+blueLower = (230/360*255, 50*2.55, 30*2.55)
+blueUpper = (250/360*255, 100*2.55, 100*2.55)
+pts_g = deque(maxlen=args["buffer"])
+pts_y = deque(maxlen=args["buffer"])
+pts_b = deque(maxlen=args["buffer"])
+n_color = 2
+colorLowers = (yellowLower,greenLower,blueLower)
+colorUppers = (yellowUpper,greenUpper,blueUpper)
+pts_color = (pts_y,pts_g,pts_b)
 
 # if a video path was not supplied, grab the reference
 # to the webcam
@@ -39,12 +56,11 @@ time.sleep(2.0)
 #f_out = open(f_name, 'w')
 
 # camera set
-mtx = np.loadtxt("trajectoryTracking/aruco/camCalMtx.csv")
-dist = np.loadtxt("trajectoryTracking/aruco/camCalDist.csv")
+mtx = np.loadtxt("aruco_tracking/cam_calib_mtx.csv")
+dist = np.loadtxt("aruco_tracking/cam_calib_dist.csv")
 
 # keep looping
 while True:
-	# time.sleep(0.1)
 	current_time = vs.get(cv2.CAP_PROP_POS_MSEC)/1000
 	
 	# grab the current frame
@@ -59,58 +75,27 @@ while True:
 		break
 
 	# rotate the current frame
-	frame = imutils.rotate(frame, -90)
+	#frame = imutils.rotate(frame, -90)
 
 	# resize the frame, blur it, and convert it to the HSV
 	# color space
-	frame = imutils.resize(frame, height=600)
+	frame = imutils.resize(frame, height=800)
 	#blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 	aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
 	parameters =  aruco.DetectorParameters_create()
 	corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, aruco_dict, parameters=parameters)
-
-	frame_markers = frame
-	# draw markers
-	# frame_markers = aruco.drawDetectedMarkers(frame.copy(), corners, ids)
+	frame_markers = aruco.drawDetectedMarkers(frame.copy(), corners, ids)
 	
 	if corners:
 
 		rvecs,tvecs, trash = aruco.estimatePoseSingleMarkers(corners, size_of_marker , mtx, dist)
 
-
 		# draw axis
-		length_of_axis = 0.02
-		tAverage = None
-		rAverage = None
+		length_of_axis = 0.01
 		for i in range(len(tvecs)):
-		# for i in range(1):
-			rotMatrix,_jacob = cv2.Rodrigues(rvecs[i])
-			offset = rotMatrix@[0,0,-0.02]
-			tvec = tvecs[i] + offset
-			markerID = ids[i,0]
-			if markerID in (0,2,3):
-				rotMatrix = rotMatrix@[[-1,0,0],[0,-1,0],[0,0,1]]
-			elif markerID == 5:
-				rotMatrix = rotMatrix@[[1,0,0],[0,0,-1],[0,1,0]]
-			if markerID == 0:
-				rotMatrix = rotMatrix@[[-1,0,0],[0,1,0],[0,0,-1]]
-			elif markerID == 2:
-				rotMatrix = rotMatrix@[[0,0,1],[0,1,0],[-1,0,0]]
-			elif markerID == 3:
-				rotMatrix = rotMatrix@[[0,0,-1],[0,1,0],[1,0,0]]
-			rvec,_jacob = cv2.Rodrigues(rotMatrix)
-			if tAverage is None:
-				tAverage = tvec
-				rAverage = rvec
-			else:		
-				tAverage += tvec
-				rAverage += rvec
-		tAverage/= len(tvecs)
-		rAverage/= len(tvecs)
-		# print(tAverage)
-		frame_markers = aruco.drawAxis(frame_markers, mtx, dist, rAverage, tAverage, length_of_axis)
+			frame_markers = aruco.drawAxis(frame_markers, mtx, dist, rvecs[i], tvecs[i], length_of_axis)
 
 
 	# show the frame to our screen
