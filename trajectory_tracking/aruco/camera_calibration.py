@@ -8,7 +8,7 @@ import pandas as pd
 #matplotlib nbagg
 
 
-'''
+
 ##########  Create Markers  ##########
 # settings
 imagesFolder = "aruco_tracking/images/"
@@ -137,7 +137,6 @@ np.savetxt("aruco_tracking/cam_calib_mtx.csv", mtx)
 np.savetxt("aruco_tracking/cam_calib_dist.csv", dist)
 ######################################
 
-'''
 
 ########## check calibration ##########
 # setting
