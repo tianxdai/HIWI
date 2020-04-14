@@ -1,5 +1,5 @@
 # USAGE
-# python3 aruco_tracking/marker_detection.py --video aruco_tracking/videos/aruco_single.mp4
+# python3 trajectoryTracking/aruco/marker_detection.py --video  trajectoryTracking/aruco/box.mp4
 
 # import the necessary packages
 from collections import deque
