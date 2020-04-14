@@ -1,6 +1,6 @@
 # USAGE
-# python3 pendulum_tracking.py 
-# python3 ball_tracking/pendulum_tracking.py --video ball_tracking/pendulum.mp4
+# python ball_tracking\pendulum_tracking.py 
+# python trajectory_tracking\pendulum\pendulum_tracking.py --video trajectory_tracking\pendulum\pendulum.mp4
 
 # import the necessary packages
 from collections import deque
