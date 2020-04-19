@@ -10,66 +10,51 @@ import imutils
 
 
 
-# ##########  Create Markers  ##########
-# # settings
-# imagesFolder = "trajectoryTracking/aruco/images/"
+
+aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
+imagesFolder = "images/"
+
+
+
+########## create marker board for calibration ##########
+# settings
+board = aruco.CharucoBoard_create(4, 4, 0.04, 0.03, aruco_dict)
+imboard = board.draw((4000, 4000))
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+plt.imshow(imboard, cmap = mpl.cm.gray, interpolation = "nearest")
+ax.axis("off")
+cv2.imwrite(imagesFolder + "chessboard.tiff",imboard)
+#plt.savefig(imagesFolder + "camCal.pdf")   
+print("->  print it out for calibration!")
+plt.grid()
+plt.show()
+
+
+
+# ######### convert video to images ##########
+# # Settings
+# videoFile = "videos/camCal.mp4"
 # aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
+# board = aruco.CharucoBoard_create(7, 5, 0.020, 0.016, aruco_dict)
+# # video to images
+# cap = cv2.VideoCapture(videoFile)
+# frameRate = cap.get(60)  #frame rate
+# while(cap.isOpened()):
+#     frameId = cap.get(1)  #current frame number
+#     ret, frame = cap.read()
+#     if (ret != True):
+#         break
+#     if (frameId%10==0):
+#         frame = imutils.rotate(frame, -90)
+#         filename = imagesFolder + "camCal/image_" +  str(int(frameId/10)) + ".jpg"
+#         cv2.imwrite(filename, frame)
+# cap.release()
+# print ("Done!")
 
-# fig = plt.figure()
-# nx = 3
-# ny = 2
-# for i in range(1, nx*ny+1):
-#     ax = fig.add_subplot(ny,nx, i)
-#     img = aruco.drawMarker(aruco_dict,i-1, 100)
-#     plt.imshow(img, cmap = mpl.cm.gray, interpolation = "nearest")
-#     ax.axis("off")
-
-# plt.savefig(imagesFolder + "markers.pdf")    
-# plt.show()
-# #plt.close()
-# #####################################
-
-
-# ########## create marker board for calibration ##########
-# # settings
-# imagesFolder = "trajectoryTracking/aruco/images/"
-# aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
-# board = aruco.CharucoBoard_create(3, 3, 1, 0.8, aruco_dict)
-# imboard = board.draw((4000, 4000))
-# fig = plt.figure()
-# ax = fig.add_subplot(1,1,1)
-# plt.imshow(imboard, cmap = mpl.cm.gray, interpolation = "nearest")
-# ax.axis("off")
-# cv2.imwrite(imagesFolder + "camera_calibration.tiff",imboard)
-# #plt.savefig(imagesFolder + "camera_calibration.pdf")   
-# print("->  print it out for calibration!")
-# plt.grid()
-# plt.show()
-# ########################################################
 
 
 ######### camera calibration ##########
-# Settings
-imagesFolder = "trajectoryTracking/aruco/images/camCal/"
-videoFile = "trajectoryTracking/aruco/videos/camCal.mp4"
-aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_250)
-board = aruco.CharucoBoard_create(3, 3, 0.030, 0.024, aruco_dict)
-# video to images
-cap = cv2.VideoCapture(videoFile)
-frameRate = cap.get(60)  #frame rate
-while(cap.isOpened()):
-    frameId = cap.get(1)  #current frame number
-    ret, frame = cap.read()
-    if (ret != True):
-        break
-    if (frameId%10==0):
-        frame = imutils.rotate(frame, -90)
-        filename = imagesFolder + "image_" +  str(int(frameId/10)) + ".jpg"
-        cv2.imwrite(filename, frame)
-cap.release()
-print ("Done!")
-
-
 def read_chessboards(images):
     """
     Charuco base pose estimation.
@@ -101,8 +86,10 @@ def read_chessboards(images):
     print("processing image finished")
     return allCorners,allIds,imsize
 
-images = [imagesFolder + f for f in os.listdir(imagesFolder) if f.startswith("image_")]
+
+images = [imagesFolder + 'camCal/' + f for f in os.listdir(imagesFolder + 'camCal/' )]
 allCorners,allIds,imsize=read_chessboards(images)
+
 
 
 def calibrate_camera(allCorners,allIds,imsize):   
@@ -135,19 +122,18 @@ print("CAMERA CALIBRATION")
 ret, mtx, dist, rvecs, tvecs = calibrate_camera(allCorners,allIds,imsize)
 print("calibration finished")
 
-np.savetxt("trajectoryTracking/aruco/camCalMtx.csv", mtx)
-np.savetxt("trajectoryTracking/aruco/camCalDist.csv", dist)
-######################################
+np.savetxt("camCalMtx.csv", mtx)
+np.savetxt("camCalDist.csv", dist)
+
+
 
 
 ########## check calibration ##########
 # setting
-imagesFolder = "trajectoryTracking/aruco/images/camCal/"
-mtx = np.loadtxt("trajectoryTracking/aruco/camCalMtx.csv")
-dist = np.loadtxt("trajectoryTracking/aruco/camCalDist.csv")
-i=60 # select image id
+mtx = np.loadtxt("camCalMtx.csv")
+dist = np.loadtxt("camCalDist.csv")
 plt.figure()
-frame = cv2.imread(imagesFolder + "image_%d.jpg"%(i))
+frame = cv2.imread(imagesFolder+'pos2.jpg')
 img_undist = cv2.undistort(frame,mtx,dist,None)
 plt.subplot(211)
 plt.imshow(frame)
@@ -158,6 +144,6 @@ plt.imshow(img_undist)
 plt.title("Corrected image")
 plt.axis("off")
 plt.show()
-#######################################
+
 
 

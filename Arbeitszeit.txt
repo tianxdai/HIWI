@@ -38,3 +38,21 @@ Zeit:  12:00 - 21:00
 Dauer:  9 Std.
 Summe:  105 Std.
 ===============================================
+Datum:  16-Apr-20
+Inhalt: camera calibration
+Zeit:  12:00 - 17:00
+Dauer:  5 Std.
+Summe:  110 Std.
+===============================================
+Datum:  18-Apr-20
+Inhalt: camera calibration
+Zeit:  12:00 - 18:00
+Dauer:  6 Std.
+Summe:  116 Std.
+===============================================
+Datum:  19-Apr-20
+Inhalt: box ref test
+Zeit:  10:00 - 15:00
+Dauer:  5 Std.
+Summe:  121 Std.
+===============================================

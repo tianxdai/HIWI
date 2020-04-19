@@ -1,5 +1,5 @@
 # USAGE
-# python poseEstimate.py --video videos/box.mp4
+# python ref.py --video videos/ref.mp4
 
 # import the necessary packages
 from collections import deque
@@ -8,9 +8,8 @@ import numpy as np
 import argparse
 from cv2 import aruco
 import cv2
-# import imutils
 import time
-
+from matplotlib import pyplot as plt
 #
 size_of_marker =  0.03 # side lenght of the marker in meter
 length_of_axis = 0.015
@@ -43,7 +42,6 @@ time.sleep(2.0)
 # camera set
 mtx = np.loadtxt("camCalMtx.csv")
 dist = np.loadtxt("camCalDist.csv")
-
 mtx = np.array([[ 2940.,    0., 1080.],
                 [    0., 2940., 1920.],
                 [    0.,    0.,    1.]])
@@ -51,8 +49,12 @@ mtx = np.array([[ 2940.,    0., 1080.],
 dist = np.zeros((5,1))
 
 # keep looping
+tHis = np.zeros((int(vs.get(cv2.CAP_PROP_FRAME_COUNT)),3))
+aHis = np.zeros((int(vs.get(cv2.CAP_PROP_FRAME_COUNT)),1))
+timeHist = np.zeros((int(vs.get(cv2.CAP_PROP_FRAME_COUNT)),1))
+count = -1
 while True:
-	# time.sleep(0.1)
+	count += 1
 	current_time = vs.get(cv2.CAP_PROP_POS_MSEC)/1000
 	
 	# grab the current frame
@@ -67,10 +69,12 @@ while True:
 		break
 
 	# rotate the current frame
-	# frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+	frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+	  
 
-	# blur it and convert it to the HSV
+	# blur it, and convert it to the HSV
 	# color space
+	# frame = imutils.resize(frame, height=600)
 	#blurred = cv2.GaussianBlur(frame, (11, 11), 0)
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -81,74 +85,54 @@ while True:
 	# draw markers
 	frame = aruco.drawDetectedMarkers(frame, corners, ids)
 	
+	
+	timeHist[count] = current_time
+
 	if corners:
 
-		rvecs,tvecs, trash = aruco.estimatePoseSingleMarkers(corners, size_of_marker , mtx, dist)
-
-
-		tAverage = None
-		rAverage = None
+		rvecs,tVecs, trash = aruco.estimatePoseSingleMarkers(corners, size_of_marker , mtx, dist)
 
 
 		# get reference coordinates
 		if refID in ids:
 			idx = np.where(ids == refID)
 			rRefMtx,_jacob = cv2.Rodrigues(rvecs[idx])
-			tRefVec = tvecs[idx]
-			frame = aruco.drawAxis(frame, mtx, dist, rRefMtx, tRefVec, length_of_axis)
+			tRefVec = tVecs[idx]
 		else:
 			print("ref Marker not found!!!!!!!!!!!!!!!!!!!!!!!")
+			aHis[count,:] = aHis[count-1,:]
+			tHis[count,:] = tHis[count-1,:]
+			# continue
 			break
+		# process all markers
+		if checkID not in ids:
+			print('checkID not found !!!!!!!!!!!!!!!!!!!!!!!!!!!')
+			aHis[count,:] = aHis[count-1,:]
+			tHis[count,:] = tHis[count-1,:]
 
-		
-		nMarker = len(tvecs)
-		trans = np.zeros((nMarker,3))
-		rots = np.zeros((nMarker,3,3))
-		weights = np.ones(nMarker)
-
-		for i in range(nMarker):
-			ID = ids[i,0]
-			idx = np.where(ids == refID)
+		for i in range(len(tVecs)):
+			markerID = ids[i,0]
 			rMtx,_jacob = cv2.Rodrigues(rvecs[i])
-			tVec = tvecs[i] + rMtx@[0,0,-0.02]*0
-
-			if abs(rMtx[:,-1]@[0,0,1])<1 and ID == 3:
-				weights[i] = 0
-
-			if ID == refID:
-				weights[i] = 0
-				continue
-			elif ID == 2:
-				rMtx = rMtx@cv2.Rodrigues(np.array([np.deg2rad(-90),0,0]))[0]
-				rMtx = rMtx@cv2.Rodrigues(np.array([0,0,np.deg2rad(90)]))[0]
-				# frame = aruco.drawAxis(frame, mtx, dist, rMtx, tVec+offset, length_of_axis)
-			elif ID == 3:
-				rMtx = rMtx@cv2.Rodrigues(np.array([np.deg2rad(-90),0,0]))[0]
-				rMtx = rMtx@cv2.Rodrigues(np.array([0,0,np.deg2rad(-90)]))[0]
-				# frame = aruco.drawAxis(frame, mtx, dist, rMtx, tVec+offset, length_of_axis)
-			elif ID == 4:
-				rMtx = rMtx@cv2.Rodrigues(np.array([np.deg2rad(-90),0,0]))[0]
-				# frame = aruco.drawAxis(frame, mtx, dist, rMtx, tVec+offset, length_of_axis)
-			elif ID == 5:
-				rMtx = rMtx@cv2.Rodrigues(np.array([np.deg2rad(-90),0,0]))[0]
-				rMtx = rMtx@cv2.Rodrigues(np.array([0,0,np.deg2rad(180)]))[0]
-			else:
-				pass 
-
-			trans[i] = tVec
-			rots[i] = rMtx
+			tVec = tVecs[i]
 			frame = aruco.drawAxis(frame, mtx, dist, rMtx, tVec, length_of_axis)
-
-		# frame = aruco.drawAxis(frame, mtx, dist, np.average(rots,axis=0,weights=weights), np.average(trans,axis=0,weights=weights), length_of_axis)
-			
-
+			if markerID == checkID:
+				transition = rRefMtx.T@(tVec-tRefVec)[0]
+				# transition = tVec
+				angle = np.rad2deg(np.arccos(rRefMtx.T@rMtx@[1,0,0]@[1,0,0]))
+				aHis[count,:] = angle
+				tHis[count,:] = transition*1000
+				print('checkID = {0}'.format(markerID))
+				print('time = {0}'.format(current_time))
+				print('tVec = {0}'.format(transition*1000))
+				print('angle = {0}'.format(angle))
+				# plt.plot([count]*3, transition)
+		print('================================')
+		
 
 	# show the frame to our screen
 	frame = cv2.resize(frame, (int(frame.shape[1]/4), int(frame.shape[0]/4)))
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
-
-	# time.sleep(.1)
 
 	# if the 'q' key is pressed, stop the loop
 	if key == ord("q"):
@@ -166,3 +150,17 @@ else:
 
 # close all windows
 cv2.destroyAllWindows()
+
+plt.subplot(1,2,1)
+plt.title('transition of marker 3')
+plt.xlabel('time (s)')
+plt.ylabel('transition (mm)')
+plt.plot(timeHist,tHis)
+plt.legend(['x','y','z'])
+
+plt.subplot(1,2,2)
+plt.title('rotation of x axis')
+plt.xlabel('time (s)')
+plt.ylabel('angle (degree)')
+plt.plot(timeHist,aHis)
+plt.show()
