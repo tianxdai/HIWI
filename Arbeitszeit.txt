@@ -4,6 +4,7 @@ Das File dokumentiert meine Arbeitszeit als Hiwi an INM
 Gesamte Arbeitszeit:
 176 - 42 = 134 Std. (Urlaub-Geschenk)
 134 - 5 = 129 Std. (Vertragsende am 26.Apr.)
+Vertrag 2020 SS
 ===============================================
 Datum:  31-Dez-19
 Summe:  82.5 Std.
@@ -55,4 +56,34 @@ Inhalt: box ref test
 Zeit:  10:00 - 15:00
 Dauer:  5 Std.
 Summe:  121 Std.
+===============================================
+Datum:  06-May-20
+Inhalt: camera calibrieren
+Zeit:  08:00 - 12:00
+Dauer:  4 Std.
+Summe:  125 Std.
+===============================================
+Datum:  08-Juni-20
+Inhalt: camera calibrieren
+Zeit:  17:15 - 24:15
+Dauer:   7 Std. 
+Summe:  132 Std.
+===============================================
+Datum:  10-Juni-20
+Inhalt: Drehschreibe Video aufnehmen
+Zeit:  10:00 - 12:00
+Dauer:   2 Std. 
+Summe:   134 Std.
+===============================================
+Datum:  19-Juni-20
+Inhalt: Drehschreibe Video aufnehmen
+Zeit:  12:30 - 18:00
+Dauer:  5.5 Stunden
+Summe:   
+===============================================
+Datum:  22-Juni-20
+Inhalt: Drehschreibe Video aufnehmen
+Zeit:  10:00 - 19:00
+Dauer:   Stunden
+Summe:   
 ===============================================
