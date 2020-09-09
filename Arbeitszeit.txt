@@ -67,23 +67,41 @@ Datum:  08-Juni-20
 Inhalt: camera calibrieren
 Zeit:  17:15 - 24:15
 Dauer:   7 Std. 
-Summe:  132 Std.
+Summe:  132-129 = 3 Std.
 ===============================================
 Datum:  10-Juni-20
 Inhalt: Drehschreibe Video aufnehmen
 Zeit:  10:00 - 12:00
 Dauer:   2 Std. 
-Summe:   134 Std.
+Summe:   5 Std.
 ===============================================
 Datum:  19-Juni-20
-Inhalt: Drehschreibe Video aufnehmen
+Inhalt: Drehschreibe calibrieren
 Zeit:  12:30 - 18:00
 Dauer:  5.5 Stunden
-Summe:   
+Summe:   10.5
 ===============================================
 Datum:  22-Juni-20
-Inhalt: Drehschreibe Video aufnehmen
+Inhalt: Koordinaten System programieren
 Zeit:  10:00 - 19:00
-Dauer:   Stunden
-Summe:   
+Dauer:  7 Stunden
+Summe:   17.5
+===============================================
+Datum:  25-Juni-20
+Inhalt: Kriterium cos programmieren
+Zeit:  14:30 - 2:30
+Dauer:  12 Stunden
+Summe:  29.5 
+===============================================
+Datum:  26-Juni-20
+Inhalt: code optimieren
+Zeit:  9:30 - 14:30
+Dauer: 5 Stunden
+Summe:  34.5 
+===============================================
+Datum:  26-Juni-20
+Inhalt: code optimieren
+Zeit:  18:00 - 21:30
+Dauer:  3.5 Stunden
+Summe:  38 Stunden
 ===============================================
